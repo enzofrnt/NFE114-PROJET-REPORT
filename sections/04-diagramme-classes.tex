@@ -1,0 +1,129 @@
+\section{UML — Diagramme de classes}
+
+Diagramme des classes PHP du modèle (attributs, méthodes et relations).
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[
+  font=\small,
+  node distance=2.2cm and 3.2cm,
+  umlclass/.style={
+    draw,
+    rectangle split,
+    rectangle split parts=3,
+    align=left,
+    text width=4.4cm
+  },
+  every path/.style={-{Stealth[length=2.5pt]}}
+]
+
+% ======================
+% Database (haut)
+% ======================
+\node[umlclass, xshift=-1.5cm] (db) {
+  \textbf{Database}
+  \nodepart{second}
+  \textit{instance : self}\\
+  \textit{pdo : PDO}
+  \nodepart{third}
+  + getInstance() : self\\
+  + pdo() : PDO
+};
+
+% ======================
+% Cours (centre)
+% ======================
+\node[umlclass, below=of db, xshift=-2.5cm] (cours) {
+  \textbf{Cours}
+  \nodepart{second}
+  \textit{id, coach\_id, salle\_id : int}\\
+  \textit{nom, description, type\_id : string}\\
+  \textit{date\_heure\_debut : datetime}\\
+  \textit{duree\_minutes, capacite\_max : int}
+  \nodepart{third}
+  + getAll(typeId?: string) : array\\
+  + getById(id: int) : ?array\\
+  + getByCoach(coachId: int) : array\\
+  + getDisponibilite(coursId: int) : array\\
+  + create(data: array) : int\\
+  + update(id: int, data: array) : bool\\
+  + delete(id: int) : bool\\
+  + getStats() : array
+};
+
+% ======================
+% Métier – gauche
+% ======================
+\node[umlclass, left=of cours] (adh) {
+  \textbf{Adherent}
+  \nodepart{second}
+  \textit{id : int}\\
+  \textit{nom, prenom, email : string}
+  \nodepart{third}
+  + getAll() : array
+};
+
+% ======================
+% Métier – droite
+% ======================
+\node[umlclass, right=of cours, xshift=-1.5cm] (coach) {
+  \textbf{Coach}
+  \nodepart{second}
+  \textit{id : int}\\
+  \textit{nom, prenom, email : string}
+  \nodepart{third}
+  + getAll() : array
+};
+
+% ======================
+% Bas – associations
+% ======================
+\node[umlclass, below=of adh] (res) {
+  \textbf{Reservation}
+  \nodepart{second}
+  \textit{id, cours\_id, adherent\_id : int}\\
+  \textit{created\_at : datetime}
+  \nodepart{third}
+  + create(adherentId: int, coursId: int) : array\\
+  + cancel(reservationId: int) : bool\\
+  + getByAdherent(adherentId: int) : array\\
+  + getParticipants(coursId: int) : array
+};
+
+\node[umlclass, below=of coach] (salle) {
+  \textbf{Salle}
+  \nodepart{second}
+  \textit{id : int}\\
+  \textit{nom : string}\\
+  \textit{capacite\_max : int}
+  \nodepart{third}
+  + getAll() : array
+};
+
+% ======================
+% Relations
+% ======================
+
+% Database
+\draw[dashed] (db) -- node[right, font=\scriptsize] {utilise PDO} (cours);
+
+% Cours
+\draw (coach) -- node[above, font=\scriptsize] {1 anime *} (cours);
+\draw (salle) -- node[right, font=\scriptsize] {1 accueille *} (cours);
+
+% Réservations
+\draw (adh) -- node[left, font=\scriptsize] {* effectue} (res);
+\draw (res) -- node[below, font=\scriptsize] {* concerne} (cours);
+
+\end{tikzpicture}
+\caption{Diagramme de classes UML — Modèle PHP (FitBooking)}
+\end{figure}
+
+\subsection{Légende et remarques}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Database} : singleton (connexion PDO partagée), utilisé par tous les modèles.
+  \item Attributs : cohérents avec le MLD (tables ADHERENT, COACH, SALLE, COURS, RESERVATION) ; en PHP les modèles accèdent aux données via requêtes SQL.
+  \item \textbf{Cours} : gestion du planning, filtrage par type, CRUD admin, statistiques (taux de remplissage).
+  \item \textbf{Reservation} : création avec transaction et verrou (\texttt{FOR UPDATE}), contrôle capacité et unicité (\texttt{cours\_id}, \texttt{adherent\_id}).
+  \item Relations : un \textbf{Cours} est animé par un \textbf{Coach} (1--*) et a lieu dans une \textbf{Salle} (1--*) ; une \textbf{Reservation} lie un \textbf{Adherent} (*) à un \textbf{Cours} (*).
+\end{itemize}

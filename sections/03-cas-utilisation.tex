@@ -1,0 +1,102 @@
+% =========================================================
+\section{UML — Cas d'utilisation}
+
+% ================= UC1 =================
+\subsection{UC1 — Consulter le planning}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small]
+
+\node[actor] (adh) at (0,1) {Adhérent};
+
+\draw (2,2) rectangle (10,-2.8);
+\node[anchor=west] at (2.2,1.7) {Système FitBooking};
+
+\node[usecase] (planning) at (6,0.7) {Consulter\\planning};
+\node[usecase] (filtrer)  at (6,-1.6) {Filtrer\\par type};
+
+\draw (adh.east) -- (planning.west);
+\draw[dashed,->] (planning) -- node[right]{inclut} (filtrer);
+
+\end{tikzpicture}
+\caption{UC1 — Consulter le planning}
+\end{figure}
+
+\begin{itemize}[leftmargin=*]
+  \item Acteur principal : Adhérent
+  \item Préconditions : aucune
+  \item Scénario nominal :
+  \begin{enumerate}
+    \item Le système affiche les cours à venir.
+    \item L'adhérent peut filtrer par type.
+  \end{enumerate}
+\end{itemize}
+
+% ================= UC3 =================
+\subsection{UC3 — Réserver / Annuler un cours}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small]
+
+\node[actor] (adh) at (0,0) {Adhérent};
+
+\draw (2,1.8) rectangle (10,-1.8);
+\node[anchor=west] at (2.2,1.5) {Système FitBooking};
+
+\node[usecase] (reserver) at (6,0.6) {Réserver\\un cours};
+\node[usecase] (annuler)  at (6,-1) {Annuler\\réservation};
+
+\draw (adh.east) -- (reserver.west);
+\draw (adh.east) -- (annuler.west);
+
+\end{tikzpicture}
+\caption{UC3 — Réserver et annuler un cours}
+\end{figure}
+
+% ================= UC5 =================
+\subsection{UC5 — Consulter les participants (Coach)}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small]
+
+\node[actor] (coa) at (0,0) {Coach};
+
+\draw (2,2.2) rectangle (13,-2.2);
+\node[anchor=west] at (4,1.9) {Système FitBooking};
+
+\node[usecase] (cours) at (7,0.8) {Voir cours\\animés};
+\node[usecase] (part)  at (4.7,-1.3) {Voir\\participants};
+\node[usecase] (taux)  at (9.3,-1.3) {Visualiser\\taux de remplissage};
+
+\draw (coa.east) -- (cours.west);
+\draw[dashed,->] (cours) -- node[right]{inclut} (part);
+\draw[dashed,->] (cours) -- node[right]{inclut} (taux);
+
+\end{tikzpicture}
+\caption{UC5 — Consultation des cours (Coach)}
+\end{figure}
+
+% ================= UC6 =================
+\subsection{UC6 — Administration (bonus)}
+
+\begin{figure}[H]
+\centering
+\begin{tikzpicture}[font=\small]
+
+\node[actor] (adm) at (0,0) {Admin};
+
+\draw (2,1.8) rectangle (10,-1.9);
+\node[anchor=west] at (2.2,1.5) {Système FitBooking};
+
+\node[usecase] (crud)  at (6,0.6) {CRUD\\cours};
+\node[usecase] (stats) at (6,-1) {Stats\\globales};
+
+\draw (adm.east) -- (crud.west);
+\draw (adm.east) -- (stats.west);
+
+\end{tikzpicture}
+\caption{UC6 — Administration}
+\end{figure}

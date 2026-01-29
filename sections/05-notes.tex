@@ -1,0 +1,6 @@
+\section{Notes d'implémentation (règles importantes)}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Anti-doublon} : contrainte UNIQUE en base + gestion d'erreur côté API.
+  \item \textbf{Capacité} : contrôle serveur en transaction (verrou sur le cours + comptage des réservations).
+  \item \textbf{Sécurité} : requêtes préparées (PDO), échappement des sorties, CSRF sur formulaires admin.
+\end{itemize}

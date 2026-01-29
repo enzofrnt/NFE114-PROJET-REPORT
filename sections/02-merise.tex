@@ -1,0 +1,40 @@
+\section{Modélisation Merise}
+
+\subsection{MCD (Modèle Conceptuel de Données)}
+\subsubsection*{Entités}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Adherent} : id, nom, prenom, email
+  \item \textbf{Coach} : id, nom, prenom, email
+  \item \textbf{Salle} : id, nom, capacite\_max
+  \item \textbf{Cours} : id, nom, description, type\_id, date\_heure\_debut, duree\_minutes, capacite\_max
+  \item \textbf{Reservation} : id, created\_at
+\end{itemize}
+
+\subsubsection*{Associations et cardinalités}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Coach} (0,n) \textemdash anime \textemdash (1,1) \textbf{Cours}
+  \item \textbf{Salle} (0,n) \textemdash accueille \textemdash (1,1) \textbf{Cours}
+  \item \textbf{Adherent} (0,n) \textemdash reserve \textemdash (0,n) \textbf{Cours} \textbf{via Reservation}
+\end{itemize}
+
+\subsubsection*{Contraintes de gestion}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{Anti-doublon} : un adhérent ne peut pas réserver deux fois le même cours \(\Rightarrow\) unicité \texttt{(cours\_id, adherent\_id)}.
+  \item \textbf{Capacité} : une réservation n'est possible que si le nombre de réservations \(<\) capacité maximale.
+\end{itemize}
+
+\subsection{MLD (Modèle Logique de Données)}
+\subsubsection*{Tables}
+\begin{itemize}[leftmargin=*]
+  \item \textbf{ADHERENT}(\underline{id}, nom, prenom, email, created\_at)
+  \item \textbf{COACH}(\underline{id}, nom, prenom, email, created\_at)
+  \item \textbf{SALLE}(\underline{id}, nom, capacite\_max)
+  \item \textbf{COURS}(\underline{id}, nom, description, type\_id, coach\_id FK\(\rightarrow\)COACH.id, salle\_id FK\(\rightarrow\)SALLE.id, date\_heure\_debut, duree\_minutes, capacite\_max, created\_at)
+  \item \textbf{RESERVATION}(\underline{id}, cours\_id FK\(\rightarrow\)COURS.id, adherent\_id FK\(\rightarrow\)ADHERENT.id, created\_at, UNIQUE(cours\_id, adherent\_id))
+\end{itemize}
+
+\subsubsection*{Index recommandés}
+\begin{itemize}[leftmargin=*]
+  \item COURS(type\_id), COURS(date\_heure\_debut)
+  \item RESERVATION(cours\_id), RESERVATION(adherent\_id)
+\end{itemize}

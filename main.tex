@@ -1,0 +1,84 @@
+\documentclass[11pt,a4paper]{article}
+
+% Encodage et langue
+\usepackage[utf8]{inputenc}
+\usepackage[T1]{fontenc}
+\usepackage[french]{babel}
+
+% Mise en page
+\usepackage{geometry}
+\geometry{margin=2cm}
+\usepackage{setspace}
+\onehalfspacing
+
+% Polices et typo
+\usepackage{lmodern}
+\usepackage{microtype}
+
+% Maths et symboles
+\usepackage{amsmath,amssymb}
+
+% Figures et graphiques
+\usepackage{graphicx}
+\usepackage{float}
+\usepackage{tikz}
+\usetikzlibrary{arrows.meta, positioning, calc, shapes.geometric, shapes.multipart}
+
+% Listes et tableaux
+\usepackage{enumitem}
+\usepackage{booktabs}
+\usepackage{longtable}
+\usepackage{array}
+
+% Références et liens
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  linkcolor=black,
+  citecolor=black,
+  urlcolor=blue
+}
+
+% Styles TikZ communs (cas d'utilisation)
+\tikzset{
+  actor/.style={align=right},
+  usecase/.style={
+    draw,
+    ellipse,
+    align=center,
+    minimum height=1.2cm,
+    minimum width=4.4cm
+  }
+}
+
+\title{
+\vspace{-1cm}
+\includegraphics[width=4cm]{figures/cnam.png}\\[1cm]  % décommenter quand le logo est disponible
+FitBooking\\[0.5em]
+\large Document de conception (Merise + UML)
+}
+\author{
+NFE114 — CNAM Grand Est\\[0.3em]
+{\small Année universitaire 2025--2026}
+}
+\date{\today}
+
+\begin{document}
+
+\maketitle
+
+\newpage
+\tableofcontents
+\newpage
+
+\input{sections/01-contexte}
+\input{sections/02-merise}
+\input{sections/03-cas-utilisation}
+\newpage
+\input{sections/04-diagramme-classes}
+\input{sections/05-notes}
+
+\newpage
+\listoffigures
+
+\end{document}
