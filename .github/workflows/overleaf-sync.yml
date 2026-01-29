@@ -1,10 +1,11 @@
-name: Sync Overleaf to repo
+name: Sync Overleaf Project to repo
 
 on:
   workflow_dispatch:
-  # Décommenter pour mise à jour automatique (ex. tous les jours à 6h UTC).
+  # Uncomment for automatic sync. Example: every 30 minutes.
+  # Not recommended: frequent runs can cause merge conflicts if edits happen in both Overleaf and the repo; use workflow_dispatch if you don't handle conflicts.
   # schedule:
-  #   - cron: "0 6 * * *"
+  #   - cron: "*/30 * * * *"
 
 jobs:
   sync:
@@ -18,7 +19,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Overleaf into temporary directory
-        uses: enzofrnt/overleaf-pull@1.0.1
+        uses: enzofrnt/overleaf-pull@1.0.3
         with:
           project_id: ${{ secrets.OVERLEAF_PROJECT_ID }}
           cookie: ${{ secrets.OVERLEAF_COOKIE }}
@@ -27,11 +28,11 @@ jobs:
 
       - name: Replace root with Overleaf project (keep .github and .git)
         run: |
-          # Supprimer tout à la racine sauf .github, .git et le dossier temporaire
+          # Remove everything at root except .github, .git and the temp directory
           find . -maxdepth 1 ! -name '.' ! -name '..' ! -name '.github' ! -name '.git' ! -name '.overleaf-sync' -exec rm -rf {} +
-          # Copier le contenu Overleaf à la racine (y compris fichiers cachés)
+          # Copy Overleaf content to root (including hidden files)
           cp -r .overleaf-sync/. .
-          # Supprimer le dossier temporaire (créé par le conteneur = root)
+          # Remove temp directory (created by container as root)
           sudo rm -rf .overleaf-sync
 
       - name: Commit and push if changes
