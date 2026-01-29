@@ -18,7 +18,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Overleaf into temporary directory
-        uses: enzofrnt/overleaf-pull@1.0.1
+        uses: enzofrnt/overleaf-pull@1.0.0
         with:
           project_id: ${{ secrets.OVERLEAF_PROJECT_ID }}
           cookie: ${{ secrets.OVERLEAF_COOKIE }}
@@ -31,7 +31,8 @@ jobs:
           find . -maxdepth 1 ! -name '.' ! -name '..' ! -name '.github' ! -name '.git' ! -name '.overleaf-sync' -exec rm -rf {} +
           # Copier le contenu Overleaf à la racine (y compris fichiers cachés)
           cp -r .overleaf-sync/. .
-          rm -rf .overleaf-sync
+          # Supprimer le dossier temporaire (créé par le conteneur = root)
+          sudo rm -rf .overleaf-sync
 
       - name: Commit and push if changes
         run: |
