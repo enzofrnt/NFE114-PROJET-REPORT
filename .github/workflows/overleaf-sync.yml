@@ -1,1 +1,46 @@
+name: Sync Overleaf to repo
 
+on:
+  workflow_dispatch:
+  # Décommenter pour mise à jour automatique (ex. tous les jours à 6h UTC).
+  # schedule:
+  #   - cron: "0 6 * * *"
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Pull Overleaf into temporary directory
+        uses: enzofrnt/overleaf-pull@1.0.0
+        with:
+          project_id: ${{ secrets.OVERLEAF_PROJECT_ID }}
+          cookie: ${{ secrets.OVERLEAF_COOKIE }}
+          base_url: ${{ secrets.OVERLEAF_HOST }}
+          output_dir: .overleaf-sync
+
+      - name: Replace root with Overleaf project (keep .github and .git)
+        run: |
+          # Supprimer tout à la racine sauf .github, .git et le dossier temporaire
+          find . -maxdepth 1 ! -name '.' ! -name '..' ! -name '.github' ! -name '.git' ! -name '.overleaf-sync' -exec rm -rf {} +
+          # Copier le contenu Overleaf à la racine (y compris fichiers cachés)
+          cp -r .overleaf-sync/. .
+          rm -rf .overleaf-sync
+
+      - name: Commit and push if changes
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --staged --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "chore: sync from Overleaf [skip ci]"
+            git push
+          fi
