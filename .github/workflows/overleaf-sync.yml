@@ -18,7 +18,7 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Pull Overleaf into temporary directory
-        uses: enzofrnt/overleaf-pull@1.0.0
+        uses: enzofrnt/overleaf-pull@1.0.1
         with:
           project_id: ${{ secrets.OVERLEAF_PROJECT_ID }}
           cookie: ${{ secrets.OVERLEAF_COOKIE }}
